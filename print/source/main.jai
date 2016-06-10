@@ -1,18 +1,29 @@
-
+// CTRU
 gfxInitDefault :: () -> void #foreign;
 gfxExit :: () -> void #foreign;
+hidInit :: () -> void #foreign;
+hidExit :: () -> void #foreign;
+hidScanInput :: () -> void #foreign;
+hidKeysDown :: () -> int #foreign;
 gfxFlushBuffers :: () -> void #foreign;
 gfxSwapBuffers :: () -> void #foreign;
 aptMainLoop :: () -> bool #foreign;
-consoleInit :: (screen : int, console : ^void) -> void;
+consoleInit :: (scren: int, console: ^void) -> void;
+
+// Basic
 printf :: (s: ^char, args: ..) -> void #foreign;
+
 
 main :: () -> int {
   gfxInitDefault();
-  defer gfxExit();
   consoleInit(0, 0);
+  hidInit();
+  defer gfxExit();
+  defer hidExit();
   printf("Hello world!\n");
   while (aptMainLoop()) {
+    hidScanInput();
+
     gfxFlushBuffers();
     gfxSwapBuffers();
   }

@@ -32,7 +32,7 @@ BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
-ROMFS		:=	romfs
+#ROMFS		:=	romfs
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -50,7 +50,7 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lcitro3d -lselena -lctru -lm
+LIBS	:= -lctru -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -173,7 +173,7 @@ $(OUTPUT).elf	:	$(OFILES)
 
 %.o: %.jai
 	@echo $(notdir $<)
-	jai -o $(TOPDIR)/$(BUILD)/$(notdir $<).c $< 
+	jai -o $(TOPDIR)/$(BUILD)/$(notdir $<).c $<
 	$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $(TOPDIR)/$(BUILD)/$(notdir $<).c -o $@ $(ERROR_FILTER)
 
 
