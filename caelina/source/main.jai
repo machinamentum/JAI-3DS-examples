@@ -12,6 +12,9 @@ gfxSwapBuffers :: () -> void #foreign;
 gfxGetFramebuffer :: (screen: int, side: int, unk: int, unk0: int) -> ^void #foreign;
 aptMainLoop :: () -> bool #foreign;
 
+GSPGPU_EVENT_VBlank0: int = 2;
+GX_TRANSFER_FMT_RGB8: int = 1;
+
 // Basic
 printf :: (s: ^char, args: ..) -> void #foreign;
 tan :: (x: double) -> double #foreign;
@@ -37,14 +40,24 @@ glRotatef :: (rad: float, x: float, y: float, z: float) -> void #foreign;
 glClearColor :: (r: float, g: float, b: float, a: float) -> void #foreign;
 glEnable :: (gl_enum: int) -> void #foreign;
 
+GL_COLOR_BUFFER_BIT: int = 0x00004000;
+GL_DEPTH_BUFFER_BIT: int = 0x00000100;
+
+GL_TRIANGLES: int = 0x0004;
+
+GL_MODELVIEW: int = 0x1700;
+GL_PROJECTION: int = 0x1701;
+
+GL_DEPTH_TEST: int = 0x0B71;
+
 DrawGLScene :: () -> void {
-  glClear(0x00004000); // GL_COLOR_BUFFER_BIT
-  glClear(0x00000100); // GL_DEPTH_BUFFER_BIT
+  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
   glTranslatef(-1.5,0.0,-6.0);
   glColor3f(1.0, 1.0, 1.0);
-  glBegin(0x0004);                      // Drawing Using Triangles
+  glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
       glVertex3f( 0.0, 1.0, 0.0);              // Top
       glVertex3f(-1.0,-1.0, 0.0);              // Bottom Left
       glVertex3f( 1.0,-1.0, 0.0);              // Bottom Right
@@ -52,7 +65,7 @@ DrawGLScene :: () -> void {
 }
 
 gspWaitForVBlank :: () -> void {
-  gspWaitForEvent(2, true); // GSPGPU_EVENT_VBlank0
+  gspWaitForEvent(GSPGPU_EVENT_VBlank0, true);
 }
 
 main :: () -> int {
@@ -65,7 +78,7 @@ main :: () -> int {
   defer gfxDestroyDevice(gfx_handle);
 
   glViewport(0, 0, 240, 400);
-  glMatrixMode(0x1701); // GL_PROJECTION
+  glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   near: float = 0.1;
   far: float = 100.0;
@@ -79,18 +92,18 @@ main :: () -> int {
   //3DS' framebuffers are sideways
   glRotatef(-90.0, 0.0, 0.0, 1.0);
 
-  glMatrixMode(0x1700); // GL_MODELVIEW
+  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
   glClearColor(1.0, 0.0, 0.0, 1.0);
-  glEnable(0x0B71); // GL_DEPTH_TEST
+  glEnable(GL_DEPTH_TEST);
 
   while (aptMainLoop()) {
     hidScanInput();
 
     DrawGLScene();
 
-    gfxFlush(gfxGetFramebuffer(0, 0, 0, 0), 240, 400, 1); // GX_TRANSFER_FMT_RGB8 = 1
+    gfxFlush(gfxGetFramebuffer(0, 0, 0, 0), 240, 400, GX_TRANSFER_FMT_RGB8);
     gfxFlushBuffers();
     gfxSwapBuffersGpu();
     gspWaitForVBlank();
