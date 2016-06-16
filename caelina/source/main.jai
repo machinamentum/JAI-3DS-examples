@@ -12,8 +12,8 @@ gfxSwapBuffers :: () -> void #foreign;
 gfxGetFramebuffer :: (screen: int, side: int, unk: int, unk0: int) -> ^void #foreign;
 aptMainLoop :: () -> bool #foreign;
 
-GSPGPU_EVENT_VBlank0: int = 2;
-GX_TRANSFER_FMT_RGB8: int = 1;
+GSPGPU_EVENT_VBlank0:= 2;
+GX_TRANSFER_FMT_RGB8:= 1;
 
 // Basic
 printf :: (s: ^char, args: ..) -> void #foreign;
@@ -40,15 +40,15 @@ glRotatef :: (rad: float, x: float, y: float, z: float) -> void #foreign;
 glClearColor :: (r: float, g: float, b: float, a: float) -> void #foreign;
 glEnable :: (gl_enum: int) -> void #foreign;
 
-GL_COLOR_BUFFER_BIT: int = 0x00004000;
-GL_DEPTH_BUFFER_BIT: int = 0x00000100;
+GL_COLOR_BUFFER_BIT:= 0x00004000;
+GL_DEPTH_BUFFER_BIT:= 0x00000100;
 
-GL_TRIANGLES: int = 0x0004;
+GL_TRIANGLES:= 0x0004;
 
-GL_MODELVIEW: int = 0x1700;
-GL_PROJECTION: int = 0x1701;
+GL_MODELVIEW:= 0x1700;
+GL_PROJECTION:= 0x1701;
 
-GL_DEPTH_TEST: int = 0x0B71;
+GL_DEPTH_TEST:= 0x0B71;
 
 DrawGLScene :: () -> void {
   glClear(GL_COLOR_BUFFER_BIT);
@@ -73,7 +73,7 @@ main :: () -> int {
   hidInit();
   defer gfxExit();
   defer hidExit();
-  gfx_handle : ^void = gfxCreateDevice(240, 400, 0);
+  gfx_handle:= gfxCreateDevice(240, 400, 0);
   gfxMakeCurrent(gfx_handle);
   defer gfxDestroyDevice(gfx_handle);
 
@@ -88,7 +88,7 @@ main :: () -> int {
   b: float = -t;
   l: float = aspect * b;
   r: float = aspect * t;
-  glFrustum(l, r, b, t, near, far);
+  glFrustum(xx l, xx r, xx b, xx t, xx near, xx far);
   //3DS' framebuffers are sideways
   glRotatef(-90.0, 0.0, 0.0, 1.0);
 
